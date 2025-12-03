@@ -3,6 +3,7 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var viewModel = InstagramViewModel()
     @State private var username: String = ""
+    @Binding var deepLinkUsername: String?
 
     var body: some View {
         NavigationView {
@@ -40,6 +41,18 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("IG Viewer")
+            .onChange(of: deepLinkUsername) { newValue in
+                if let username = newValue {
+                    self.username = username
+                    Task {
+                        await viewModel.fetchUserProfile(username: username)
+                    }
+                    // Clear the deep link after processing
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        deepLinkUsername = nil
+                    }
+                }
+            }
         }
     }
 }

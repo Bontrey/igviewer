@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		96A3BF002EE092D9003BBC85 /* IGViewerShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 96A3BEF62EE092D9003BBC85 /* IGViewerShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AA0000000000000000000001 /* IGViewerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000001 /* IGViewerApp.swift */; };
 		AA0000000000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000002 /* ContentView.swift */; };
 		AA0000000000000000000003 /* InstagramUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000003 /* InstagramUser.swift */; };
@@ -20,7 +21,33 @@
 		AA0000000000000000000011 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000011 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		96A3BEFE2EE092D9003BBC85 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = KK0000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 96A3BEF52EE092D9003BBC85;
+			remoteInfo = IGViewerShareExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		96A3BF012EE092D9003BBC85 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				96A3BF002EE092D9003BBC85 /* IGViewerShareExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		96A3BEF62EE092D9003BBC85 /* IGViewerShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = IGViewerShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		96A3BF0E2EE09447003BBC85 /* IGViewer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = IGViewer.entitlements; sourceTree = "<group>"; };
 		BB0000000000000000000001 /* IGViewerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IGViewerApp.swift; sourceTree = "<group>"; };
 		BB0000000000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		BB0000000000000000000003 /* InstagramUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstagramUser.swift; sourceTree = "<group>"; };
@@ -36,7 +63,28 @@
 		DD0000000000000000000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		96A3BF102EE09600003BBC85 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 96A3BEF52EE092D9003BBC85 /* IGViewerShareExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		96A3BEF72EE092D9003BBC85 /* IGViewerShareExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (96A3BF102EE09600003BBC85 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = IGViewerShareExtension; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
+		96A3BEF32EE092D9003BBC85 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EE0000000000000000000001 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -51,6 +99,7 @@
 			isa = PBXGroup;
 			children = (
 				FF0000000000000000000002 /* IGViewer */,
+				96A3BEF72EE092D9003BBC85 /* IGViewerShareExtension */,
 				FF0000000000000000000003 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -58,6 +107,7 @@
 		FF0000000000000000000002 /* IGViewer */ = {
 			isa = PBXGroup;
 			children = (
+				96A3BF0E2EE09447003BBC85 /* IGViewer.entitlements */,
 				BB0000000000000000000001 /* IGViewerApp.swift */,
 				BB0000000000000000000002 /* ContentView.swift */,
 				FF0000000000000000000004 /* Models */,
@@ -74,6 +124,7 @@
 			isa = PBXGroup;
 			children = (
 				CC0000000000000000000001 /* IGViewer.app */,
+				96A3BEF62EE092D9003BBC85 /* IGViewerShareExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -117,6 +168,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		96A3BEF52EE092D9003BBC85 /* IGViewerShareExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 96A3BF052EE092D9003BBC85 /* Build configuration list for PBXNativeTarget "IGViewerShareExtension" */;
+			buildPhases = (
+				96A3BEF22EE092D9003BBC85 /* Sources */,
+				96A3BEF32EE092D9003BBC85 /* Frameworks */,
+				96A3BEF42EE092D9003BBC85 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				96A3BEF72EE092D9003BBC85 /* IGViewerShareExtension */,
+			);
+			name = IGViewerShareExtension;
+			packageProductDependencies = (
+			);
+			productName = IGViewerShareExtension;
+			productReference = 96A3BEF62EE092D9003BBC85 /* IGViewerShareExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		GG0000000000000000000001 /* IGViewer */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = HH0000000000000000000001 /* Build configuration list for PBXNativeTarget "IGViewer" */;
@@ -124,10 +197,12 @@
 				II0000000000000000000001 /* Sources */,
 				EE0000000000000000000001 /* Frameworks */,
 				JJ0000000000000000000001 /* Resources */,
+				96A3BF012EE092D9003BBC85 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				96A3BEFF2EE092D9003BBC85 /* PBXTargetDependency */,
 			);
 			name = IGViewer;
 			productName = IGViewer;
@@ -141,9 +216,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1500;
+				LastSwiftUpdateCheck = 2610;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
+					96A3BEF52EE092D9003BBC85 = {
+						CreatedOnToolsVersion = 26.1.1;
+					};
 					GG0000000000000000000001 = {
 						CreatedOnToolsVersion = 15.0;
 					};
@@ -163,11 +241,19 @@
 			projectRoot = "";
 			targets = (
 				GG0000000000000000000001 /* IGViewer */,
+				96A3BEF52EE092D9003BBC85 /* IGViewerShareExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		96A3BEF42EE092D9003BBC85 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		JJ0000000000000000000001 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -179,6 +265,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		96A3BEF22EE092D9003BBC85 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		II0000000000000000000001 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -198,7 +291,73 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		96A3BEFF2EE092D9003BBC85 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 96A3BEF52EE092D9003BBC85 /* IGViewerShareExtension */;
+			targetProxy = 96A3BEFE2EE092D9003BBC85 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		96A3BF022EE092D9003BBC85 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = IGViewerShareExtension/IGViewerShareExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7V3D6N8V5K;
+				INFOPLIST_FILE = IGViewerShareExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = IGViewerShareExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.igviewer.IGViewer.IGViewerShareExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		96A3BF032EE092D9003BBC85 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = IGViewerShareExtension/IGViewerShareExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7V3D6N8V5K;
+				INFOPLIST_FILE = IGViewerShareExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = IGViewerShareExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.igviewer.IGViewer.IGViewerShareExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		MM0000000000000000000001 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -323,9 +482,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = IGViewer/IGViewer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = 7V3D6N8V5K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = IGViewer/Info.plist;
@@ -352,9 +513,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = IGViewer/IGViewer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = 7V3D6N8V5K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = IGViewer/Info.plist;
@@ -379,6 +542,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		96A3BF052EE092D9003BBC85 /* Build configuration list for PBXNativeTarget "IGViewerShareExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				96A3BF022EE092D9003BBC85 /* Debug */,
+				96A3BF032EE092D9003BBC85 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		HH0000000000000000000001 /* Build configuration list for PBXNativeTarget "IGViewer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

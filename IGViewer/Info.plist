@@ -65,5 +65,20 @@
             </dict>
         </dict>
     </dict>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLName</key>
+            <string>com.igviewer.IGViewer</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>igviewer</string>
+            </array>
+        </dict>
+    </array>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>instagram</string>
+    </array>
 </dict>
 </plist>
