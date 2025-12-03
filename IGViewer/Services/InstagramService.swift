@@ -65,9 +65,20 @@ class InstagramService {
             if !user.isPrivate, let edges = userData.edgeOwnerToTimelineMedia?.edges {
                 posts = edges.compactMap { edge in
                     let node = edge.node
+
+                    // Check if this is a carousel post
+                    var imageUrls: [String] = []
+                    if let sidecarChildren = node.edgeSidecarToChildren?.edges {
+                        // Carousel post - extract all images
+                        imageUrls = sidecarChildren.map { $0.node.displayUrl }
+                    } else {
+                        // Single image post
+                        imageUrls = [node.displayUrl]
+                    }
+
                     return InstagramPost(
                         id: node.id,
-                        imageUrl: node.displayUrl,
+                        imageUrls: imageUrls,
                         caption: node.edgeMediaToCaption?.edges?.first?.node?.text,
                         likesCount: node.edgeLikedBy?.count,
                         commentsCount: node.edgeMediaToComment?.count,
@@ -169,6 +180,7 @@ struct MediaNode: Codable {
     let edgeLikedBy: EdgeCount?
     let edgeMediaToComment: EdgeCount?
     let takenAtTimestamp: Int?
+    let edgeSidecarToChildren: SidecarEdge?  // For carousel posts
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -177,6 +189,7 @@ struct MediaNode: Codable {
         case edgeLikedBy = "edge_liked_by"
         case edgeMediaToComment = "edge_media_to_comment"
         case takenAtTimestamp = "taken_at_timestamp"
+        case edgeSidecarToChildren = "edge_sidecar_to_children"
     }
 }
 
@@ -190,6 +203,22 @@ struct CaptionNode: Codable {
 
 struct CaptionText: Codable {
     let text: String?
+}
+
+struct SidecarEdge: Codable {
+    let edges: [SidecarMediaEdge]?
+}
+
+struct SidecarMediaEdge: Codable {
+    let node: SidecarMediaNode
+}
+
+struct SidecarMediaNode: Codable {
+    let displayUrl: String
+
+    enum CodingKeys: String, CodingKey {
+        case displayUrl = "display_url"
+    }
 }
 
 extension InstagramUser {
@@ -206,13 +235,3 @@ extension InstagramUser {
     }
 }
 
-extension InstagramPost {
-    init(id: String, imageUrl: String, caption: String?, likesCount: Int?, commentsCount: Int?, timestamp: Date?) {
-        self.id = id
-        self.imageUrl = imageUrl
-        self.caption = caption
-        self.likesCount = likesCount
-        self.commentsCount = commentsCount
-        self.timestamp = timestamp
-    }
-}

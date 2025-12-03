@@ -65,12 +65,34 @@ struct PhotoGridView: View {
 
 struct PhotoDetailView: View {
     let post: InstagramPost
+    @State private var currentPage = 0
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                AsyncImageView(url: post.imageUrl)
-                    .aspectRatio(contentMode: .fit)
+                // Image carousel
+                if post.imageUrls.count > 1 {
+                    VStack(spacing: 8) {
+                        TabView(selection: $currentPage) {
+                            ForEach(Array(post.imageUrls.enumerated()), id: \.offset) { index, imageUrl in
+                                AsyncImageView(url: imageUrl)
+                                    .aspectRatio(contentMode: .fit)
+                                    .tag(index)
+                            }
+                        }
+                        .tabViewStyle(.page(indexDisplayMode: .always))
+                        .frame(height: 400)
+
+                        // Page indicator text
+                        Text("\(currentPage + 1) / \(post.imageUrls.count)")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                } else {
+                    // Single image
+                    AsyncImageView(url: post.imageUrl)
+                        .aspectRatio(contentMode: .fit)
+                }
 
                 if let caption = post.caption, !caption.isEmpty {
                     VStack(alignment: .leading, spacing: 8) {
