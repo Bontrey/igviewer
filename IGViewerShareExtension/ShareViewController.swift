@@ -22,7 +22,7 @@ class ShareViewController: UIViewController {
 
                     // Extract username from Instagram URL
                     if let username = self.extractUsername(from: sharedURL) {
-                        // Save to shared UserDefaults using App Group
+                        // Save to shared UserDefaults using App Group as a fallback
                         if let sharedDefaults = UserDefaults(suiteName: "group.com.igviewer.IGViewer") {
                             sharedDefaults.set(username, forKey: "pendingUsername")
                             sharedDefaults.set(Date(), forKey: "pendingUsernameTimestamp")
@@ -31,9 +31,9 @@ class ShareViewController: UIViewController {
                             NSLog("✅ Share Extension: Saved username '\(username)' to shared storage")
                         }
 
-                        // Show success message
+                        // Open main app with custom URL scheme
                         DispatchQueue.main.async {
-                            self.showSuccessMessage(username: username)
+                            self.openMainApp(with: username)
                         }
                     } else {
                         DispatchQueue.main.async {
@@ -61,18 +61,37 @@ class ShareViewController: UIViewController {
         return nil
     }
 
-    private func showSuccessMessage(username: String) {
-        let alert = UIAlertController(
-            title: "Saved!",
-            message: "@\(username)'s profile is ready to view.\nOpen IG Viewer to continue.",
-            preferredStyle: .alert
-        )
+    private func openMainApp(with username: String) {
+        // Create custom URL scheme to open the main app
+        let urlString = "igviewer://\(username)"
 
-        alert.addAction(UIAlertAction(title: "OK", style: .default) { [weak self] _ in
+        guard let url = URL(string: urlString) else {
+            NSLog("❌ Share Extension: Failed to create URL from '\(urlString)'")
+            completeRequest()
+            return
+        }
+
+        // Use openURL to launch the main app
+        // This requires using the extensionContext's open method
+        var responder: UIResponder? = self
+        while responder != nil {
+            if let application = responder as? UIApplication {
+                application.open(url, options: [:]) { [weak self] success in
+                    NSLog("✅ Share Extension: Opened main app with URL '\(urlString)', success: \(success)")
+                    self?.completeRequest()
+                }
+                return
+            }
+            responder = responder?.next
+        }
+
+        // Fallback: use the modern approach with extensionContext
+        // Note: This is the recommended way for share extensions
+        NSLog("✅ Share Extension: Opening URL '\(urlString)' via extensionContext")
+        self.extensionContext?.open(url, completionHandler: { [weak self] success in
+            NSLog("✅ Share Extension: URL opened, success: \(success)")
             self?.completeRequest()
         })
-
-        present(alert, animated: true)
     }
 
     private func showError() {
