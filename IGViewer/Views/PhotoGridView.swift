@@ -11,8 +11,9 @@ struct PhotoGridView: View {
     ]
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 16) {
+        GeometryReader { geometry in
+            VStack(spacing: 0) {
+                // Header - fixed at top
                 HStack {
                     Image(systemName: "person.circle.fill")
                         .font(.system(size: 50))
@@ -29,33 +30,39 @@ struct PhotoGridView: View {
                     Spacer()
                 }
                 .padding()
+                .background(Color(UIColor.systemBackground))
 
-                if posts.isEmpty {
-                    VStack(spacing: 16) {
-                        Image(systemName: "photo.on.rectangle")
-                            .font(.system(size: 60))
-                            .foregroundColor(.secondary)
+                // Scrollable photo grid
+                ScrollView {
+                    if posts.isEmpty {
+                        VStack(spacing: 16) {
+                            Image(systemName: "photo.on.rectangle")
+                                .font(.system(size: 60))
+                                .foregroundColor(.secondary)
 
-                        Text("No photos available")
-                            .font(.headline)
-                            .foregroundColor(.secondary)
+                            Text("No photos available")
+                                .font(.headline)
+                                .foregroundColor(.secondary)
 
-                        Text("This user hasn't posted any public photos yet")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                            .multilineTextAlignment(.center)
-                    }
-                    .padding()
-                    .padding(.top, 40)
-                } else {
-                    LazyVGrid(columns: columns, spacing: 2) {
-                        ForEach(posts) { post in
-                            NavigationLink(destination: PhotoDetailView(post: post)) {
-                                AsyncImageView(url: post.imageUrl)
-                                    .aspectRatio(1, contentMode: .fill)
-                                    .clipped()
+                            Text("This user hasn't posted any public photos yet")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                                .multilineTextAlignment(.center)
+                        }
+                        .padding()
+                        .padding(.top, 40)
+                    } else {
+                        LazyVGrid(columns: columns, spacing: 2) {
+                            ForEach(posts) { post in
+                                NavigationLink(destination: PhotoDetailView(post: post)) {
+                                    AsyncImageView(url: post.imageUrl)
+                                        .aspectRatio(1, contentMode: .fill)
+                                        .frame(width: (geometry.size.width - 4) / 3, height: (geometry.size.width - 4) / 3)
+                                        .clipped()
+                                }
                             }
                         }
+                        .padding(.horizontal, 0)
                     }
                 }
             }
