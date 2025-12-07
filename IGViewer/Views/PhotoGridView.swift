@@ -104,7 +104,7 @@ struct PhotoGridView: View {
         .toolbar {
             ToolbarItem(placement: .principal) {
                 if !headerIsVisible {
-                    Text(username)
+                    Text("@\(username)")
                         .font(.headline)
                 }
             }
