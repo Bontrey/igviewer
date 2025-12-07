@@ -5,6 +5,8 @@ struct PhotoGridView: View {
     let username: String
     let profilePicUrl: String?
 
+    @State private var headerIsVisible: Bool = true
+
     let columns = [
         GridItem(.flexible(), spacing: 2),
         GridItem(.flexible(), spacing: 2),
@@ -48,6 +50,16 @@ struct PhotoGridView: View {
                     }
                     .padding()
                     .background(Color(UIColor.systemBackground))
+                    .background(
+                        GeometryReader { geo in
+                            Color.clear
+                                .onChange(of: geo.frame(in: .global).minY) { newValue in
+                                    // Header starts around y=100 (below nav bar)
+                                    // When it scrolls up past y=50, it's mostly hidden
+                                    headerIsVisible = newValue > 50
+                                }
+                        }
+                    )
 
                     // Photo grid
                     if posts.isEmpty {
@@ -83,6 +95,15 @@ struct PhotoGridView: View {
                 }
             }
         }
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                if !headerIsVisible {
+                    Text(username)
+                        .font(.headline)
+                }
+            }
+        }
+        .animation(.easeInOut(duration: 0.2), value: headerIsVisible)
     }
 }
 

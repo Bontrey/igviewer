@@ -92,7 +92,6 @@ struct PhotosDestinationView: View {
             }
             .padding()
         }
-        .navigationTitle(viewModel.currentUser?.username ?? username)
         .navigationBarTitleDisplayMode(.inline)
     }
 }
