@@ -51,3 +51,17 @@ struct InstagramUser: Codable, Identifiable {
         }
     }
 }
+
+struct SavedUser: Codable, Identifiable {
+    let id: String
+    let username: String
+    let profilePicUrl: String?
+    let savedDate: Date
+
+    init(from user: InstagramUser) {
+        self.id = user.id
+        self.username = user.username
+        self.profilePicUrl = user.profilePicUrl
+        self.savedDate = Date()
+    }
+}

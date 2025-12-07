@@ -9,11 +9,21 @@ struct ContentView: View {
         NavigationView {
             VStack {
                 if viewModel.currentUser == nil {
-                    UserInputView(username: $username, onSubmit: {
-                        Task {
-                            await viewModel.fetchUserProfile(username: username)
+                    UserInputView(
+                        username: $username,
+                        savedUsers: viewModel.savedUsers,
+                        onSubmit: {
+                            Task {
+                                await viewModel.fetchUserProfile(username: username)
+                            }
+                        },
+                        onSelectSavedUser: { selectedUsername in
+                            username = selectedUsername
+                            Task {
+                                await viewModel.fetchUserProfile(username: selectedUsername)
+                            }
                         }
-                    })
+                    )
                 } else {
                     if viewModel.isPrivate {
                         PrivateAccountView(username: viewModel.currentUser?.username ?? username)
@@ -21,9 +31,21 @@ struct ContentView: View {
                         PhotoGridView(posts: viewModel.posts, username: viewModel.currentUser?.username ?? username)
                     }
 
-                    Button("Search Another User") {
-                        viewModel.reset()
-                        username = ""
+                    HStack(spacing: 16) {
+                        Button(action: {
+                            viewModel.toggleSaveUser()
+                        }) {
+                            HStack {
+                                Image(systemName: viewModel.isCurrentUserSaved ? "star.fill" : "star")
+                                Text(viewModel.isCurrentUserSaved ? "Saved" : "Save User")
+                            }
+                            .foregroundColor(viewModel.isCurrentUserSaved ? .yellow : .purple)
+                        }
+
+                        Button("Search Another User") {
+                            viewModel.reset()
+                            username = ""
+                        }
                     }
                     .padding()
                 }

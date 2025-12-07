@@ -235,3 +235,58 @@ extension InstagramUser {
     }
 }
 
+class SavedUsersManager {
+    static let shared = SavedUsersManager()
+    private let userDefaults = UserDefaults.standard
+    private let savedUsersKey = "savedInstagramUsers"
+
+    private init() {}
+
+    func getSavedUsers() -> [SavedUser] {
+        guard let data = userDefaults.data(forKey: savedUsersKey) else {
+            return []
+        }
+
+        do {
+            let users = try JSONDecoder().decode([SavedUser].self, from: data)
+            return users.sorted { $0.savedDate > $1.savedDate }
+        } catch {
+            print("Error decoding saved users: \(error)")
+            return []
+        }
+    }
+
+    func saveUser(_ user: InstagramUser) {
+        var savedUsers = getSavedUsers()
+
+        // Check if user already exists
+        if !savedUsers.contains(where: { $0.id == user.id }) {
+            let savedUser = SavedUser(from: user)
+            savedUsers.append(savedUser)
+
+            do {
+                let data = try JSONEncoder().encode(savedUsers)
+                userDefaults.set(data, forKey: savedUsersKey)
+            } catch {
+                print("Error saving user: \(error)")
+            }
+        }
+    }
+
+    func removeUser(withId id: String) {
+        var savedUsers = getSavedUsers()
+        savedUsers.removeAll { $0.id == id }
+
+        do {
+            let data = try JSONEncoder().encode(savedUsers)
+            userDefaults.set(data, forKey: savedUsersKey)
+        } catch {
+            print("Error removing user: \(error)")
+        }
+    }
+
+    func isUserSaved(_ user: InstagramUser) -> Bool {
+        return getSavedUsers().contains { $0.id == user.id }
+    }
+}
+
