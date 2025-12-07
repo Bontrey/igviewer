@@ -76,7 +76,7 @@ struct PhotosDestinationView: View {
             if viewModel.isPrivate {
                 PrivateAccountView(username: viewModel.currentUser?.username ?? username)
             } else {
-                PhotoGridView(posts: viewModel.posts, username: viewModel.currentUser?.username ?? username)
+                PhotoGridView(posts: viewModel.posts, username: viewModel.currentUser?.username ?? username, profilePicUrl: viewModel.currentUser?.profilePicUrl)
             }
 
             HStack(spacing: 16) {

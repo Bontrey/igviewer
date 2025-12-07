@@ -3,6 +3,7 @@ import SwiftUI
 struct PhotoGridView: View {
     let posts: [InstagramPost]
     let username: String
+    let profilePicUrl: String?
 
     let columns = [
         GridItem(.flexible(), spacing: 2),
@@ -16,9 +17,24 @@ struct PhotoGridView: View {
                 VStack(spacing: 0) {
                     // Header - scrolls with content
                     HStack {
-                        Image(systemName: "person.circle.fill")
-                            .font(.system(size: 50))
-                            .foregroundColor(.purple)
+                        if let profilePicUrl = profilePicUrl,
+                           let url = URL(string: profilePicUrl) {
+                            AsyncImage(url: url) { image in
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                            } placeholder: {
+                                Image(systemName: "person.circle.fill")
+                                    .resizable()
+                                    .foregroundColor(.gray)
+                            }
+                            .frame(width: 80, height: 80)
+                            .clipShape(Circle())
+                        } else {
+                            Image(systemName: "person.circle.fill")
+                                .font(.system(size: 50))
+                                .foregroundColor(.purple)
+                        }
 
                         VStack(alignment: .leading) {
                             Text("@\(username)")
