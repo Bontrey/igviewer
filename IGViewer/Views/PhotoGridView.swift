@@ -30,7 +30,7 @@ struct PhotoGridView: View {
                                     .resizable()
                                     .foregroundColor(.gray)
                             }
-                            .frame(width: 80, height: 80)
+                            .frame(width: 60, height: 60)
                             .clipShape(Circle())
                         } else {
                             Image(systemName: "person.circle.fill")
@@ -41,9 +41,6 @@ struct PhotoGridView: View {
                         VStack(alignment: .leading) {
                             Text("@\(username)")
                                 .font(.headline)
-                            Text("\(posts.count) photos")
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
                         }
 
                         Spacer()
