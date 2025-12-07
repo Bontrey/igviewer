@@ -12,28 +12,28 @@ struct PhotoGridView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            VStack(spacing: 0) {
-                // Header - fixed at top
-                HStack {
-                    Image(systemName: "person.circle.fill")
-                        .font(.system(size: 50))
-                        .foregroundColor(.purple)
+            ScrollView {
+                VStack(spacing: 0) {
+                    // Header - scrolls with content
+                    HStack {
+                        Image(systemName: "person.circle.fill")
+                            .font(.system(size: 50))
+                            .foregroundColor(.purple)
 
-                    VStack(alignment: .leading) {
-                        Text("@\(username)")
-                            .font(.headline)
-                        Text("\(posts.count) photos")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
+                        VStack(alignment: .leading) {
+                            Text("@\(username)")
+                                .font(.headline)
+                            Text("\(posts.count) photos")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+
+                        Spacer()
                     }
+                    .padding()
+                    .background(Color(UIColor.systemBackground))
 
-                    Spacer()
-                }
-                .padding()
-                .background(Color(UIColor.systemBackground))
-
-                // Scrollable photo grid
-                ScrollView {
+                    // Photo grid
                     if posts.isEmpty {
                         VStack(spacing: 16) {
                             Image(systemName: "photo.on.rectangle")
