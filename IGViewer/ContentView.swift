@@ -47,7 +47,6 @@ struct ContentView: View {
                     EmptyView()
                 }
             }
-            .navigationTitle("IG Viewer")
             .onChange(of: deepLinkUsername) { newValue in
                 if let username = newValue {
                     self.username = username

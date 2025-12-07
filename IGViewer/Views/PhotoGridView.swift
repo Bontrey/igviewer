@@ -177,7 +177,7 @@ struct PhotoDetailView: View {
                 Spacer()
             }
         }
-        .navigationTitle("Photo")
+        .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
     }
 }
