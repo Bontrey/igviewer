@@ -76,21 +76,8 @@ struct PhotosDestinationView: View {
             if viewModel.isPrivate {
                 PrivateAccountView(username: viewModel.currentUser?.username ?? username)
             } else {
-                PhotoGridView(posts: viewModel.posts, username: viewModel.currentUser?.username ?? username, profilePicUrl: viewModel.currentUser?.profilePicUrl)
+                PhotoGridView(posts: viewModel.posts, username: viewModel.currentUser?.username ?? username, profilePicUrl: viewModel.currentUser?.profilePicUrl, viewModel: viewModel)
             }
-
-            HStack(spacing: 16) {
-                Button(action: {
-                    viewModel.toggleSaveUser()
-                }) {
-                    HStack {
-                        Image(systemName: viewModel.isCurrentUserSaved ? "star.fill" : "star")
-                        Text(viewModel.isCurrentUserSaved ? "Saved" : "Save User")
-                    }
-                    .foregroundColor(viewModel.isCurrentUserSaved ? .yellow : .purple)
-                }
-            }
-            .padding()
         }
         .navigationBarTitleDisplayMode(.inline)
     }

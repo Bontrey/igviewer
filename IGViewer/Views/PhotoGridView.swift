@@ -4,6 +4,7 @@ struct PhotoGridView: View {
     let posts: [InstagramPost]
     let username: String
     let profilePicUrl: String?
+    @ObservedObject var viewModel: InstagramViewModel
 
     @State private var headerIsVisible: Bool = true
 
@@ -44,6 +45,14 @@ struct PhotoGridView: View {
                         }
 
                         Spacer()
+
+                        Button(action: {
+                            viewModel.toggleSaveUser()
+                        }) {
+                            Image(systemName: viewModel.isCurrentUserSaved ? "star.fill" : "star")
+                                .foregroundColor(viewModel.isCurrentUserSaved ? .yellow : .purple)
+                                .font(.system(size: 22))
+                        }
                     }
                     .padding()
                     .background(Color(UIColor.systemBackground))
