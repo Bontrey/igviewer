@@ -33,7 +33,7 @@ private struct LinkifiedTextRepresentable: UIViewRepresentable {
         textView.textContainer.lineFragmentPadding = 0
         textView.textContainer.lineBreakMode = .byWordWrapping
         textView.delegate = context.coordinator
-        textView.font = .systemFont(ofSize: 16)
+        textView.font = .systemFont(ofSize: 18)
         textView.textColor = .label
         textView.linkTextAttributes = [
             .foregroundColor: UIColor.systemBlue,
@@ -55,6 +55,11 @@ private struct LinkifiedTextRepresentable: UIViewRepresentable {
 
     private func linkifyText(_ text: String) -> NSAttributedString {
         let attributedString = NSMutableAttributedString(string: text)
+
+        // Set font for the entire text
+        let fullRange = NSRange(location: 0, length: attributedString.length)
+        attributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 18), range: fullRange)
+
         let pattern = "@([A-Za-z0-9._]+)"
 
         guard let regex = try? NSRegularExpression(pattern: pattern, options: []) else {
