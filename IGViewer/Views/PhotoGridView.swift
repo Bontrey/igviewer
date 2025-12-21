@@ -4,9 +4,12 @@ struct PhotoGridView: View {
     let posts: [InstagramPost]
     let username: String
     let profilePicUrl: String?
+    let biography: String?
     @ObservedObject var viewModel: InstagramViewModel
 
     @State private var headerIsVisible: Bool = true
+    @State private var selectedUsername: String?
+    @State private var isNavigating = false
 
     let columns = [
         GridItem(.flexible(), spacing: 2),
@@ -67,6 +70,14 @@ struct PhotoGridView: View {
                         }
                     )
 
+                    // Biography section
+                    if let biography = biography, !biography.isEmpty {
+                        LinkifiedText(text: biography, selectedUsername: $selectedUsername, isNavigating: $isNavigating)
+                            .padding(.horizontal, 16)
+                            .padding(.bottom, 12)
+                            .background(Color(UIColor.systemBackground))
+                    }
+
                     // Photo grid
                     if posts.isEmpty {
                         VStack(spacing: 16) {
@@ -110,6 +121,15 @@ struct PhotoGridView: View {
             }
         }
         .animation(.easeInOut(duration: 0.2), value: headerIsVisible)
+        .background(
+            NavigationLink(
+                destination: PhotosDestinationView(username: selectedUsername ?? ""),
+                isActive: $isNavigating
+            ) {
+                EmptyView()
+            }
+            .hidden()
+        )
     }
 }
 

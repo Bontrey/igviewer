@@ -122,7 +122,7 @@ private struct PhotosDestinationContent: View {
             } else if viewModel.isPrivate {
                 PrivateAccountView(username: viewModel.currentUser?.username ?? username)
             } else {
-                PhotoGridView(posts: viewModel.posts, username: viewModel.currentUser?.username ?? username, profilePicUrl: viewModel.currentUser?.profilePicUrl, viewModel: viewModel)
+                PhotoGridView(posts: viewModel.posts, username: viewModel.currentUser?.username ?? username, profilePicUrl: viewModel.currentUser?.profilePicUrl, biography: viewModel.currentUser?.biography, viewModel: viewModel)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
