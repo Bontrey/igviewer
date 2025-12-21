@@ -53,9 +53,10 @@ private struct LinkifiedTextRepresentable: UIViewRepresentable {
     private func linkifyText(_ text: String) -> NSAttributedString {
         let attributedString = NSMutableAttributedString(string: text)
 
-        // Set font for the entire text
+        // Set font and color for the entire text
         let fullRange = NSRange(location: 0, length: attributedString.length)
         attributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 18), range: fullRange)
+        attributedString.addAttribute(.foregroundColor, value: UIColor.label, range: fullRange)
 
         let pattern = "@([A-Za-z0-9._]+)"
 
