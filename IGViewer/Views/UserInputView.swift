@@ -3,6 +3,7 @@ import SwiftUI
 struct UserInputView: View {
     @Binding var username: String
     let savedUsers: [SavedUser]
+    let history: [SavedUser]
     let onSubmit: () -> Void
     let onSelectSavedUser: (String) -> Void
 
@@ -37,6 +38,28 @@ struct UserInputView: View {
                             ForEach(savedUsers) { savedUser in
                                 SavedUserButton(savedUser: savedUser) {
                                     onSelectSavedUser(savedUser.username)
+                                }
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+                }
+            }
+
+            // History section
+            if !history.isEmpty {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Recently Viewed")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.secondary)
+                        .padding(.horizontal)
+
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 12) {
+                            ForEach(history) { historyUser in
+                                SavedUserButton(savedUser: historyUser) {
+                                    onSelectSavedUser(historyUser.username)
                                 }
                             }
                         }

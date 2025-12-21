@@ -12,6 +12,7 @@ struct ContentView: View {
                 UserInputView(
                     username: $username,
                     savedUsers: viewModel.savedUsers,
+                    history: viewModel.history,
                     onSubmit: {
                         Task {
                             await viewModel.fetchUserProfile(username: username)

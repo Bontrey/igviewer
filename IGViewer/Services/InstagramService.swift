@@ -290,3 +290,71 @@ class SavedUsersManager {
     }
 }
 
+class HistoryManager {
+    static let shared = HistoryManager()
+    private let userDefaults = UserDefaults.standard
+    private let historyKey = "viewedUsersHistory"
+    private let maxHistoryCount = 7
+
+    private init() {}
+
+    func getHistory(excludingSavedUsers savedUsers: [SavedUser]) -> [SavedUser] {
+        guard let data = userDefaults.data(forKey: historyKey) else {
+            return []
+        }
+
+        do {
+            let history = try JSONDecoder().decode([SavedUser].self, from: data)
+            let savedUserIds = Set(savedUsers.map { $0.id })
+
+            // Filter out saved users and return sorted by date
+            return history
+                .filter { !savedUserIds.contains($0.id) }
+                .sorted { $0.savedDate > $1.savedDate }
+        } catch {
+            print("Error decoding history: \(error)")
+            return []
+        }
+    }
+
+    func addToHistory(_ user: InstagramUser) {
+        var history = getAllHistory()
+
+        // Remove if already exists (to avoid duplicates and update position)
+        history.removeAll { $0.id == user.id }
+
+        // Add to the front
+        let historyUser = SavedUser(from: user)
+        history.insert(historyUser, at: 0)
+
+        // Keep only the most recent 7
+        if history.count > maxHistoryCount {
+            history = Array(history.prefix(maxHistoryCount))
+        }
+
+        saveHistory(history)
+    }
+
+    private func getAllHistory() -> [SavedUser] {
+        guard let data = userDefaults.data(forKey: historyKey) else {
+            return []
+        }
+
+        do {
+            return try JSONDecoder().decode([SavedUser].self, from: data)
+        } catch {
+            print("Error decoding history: \(error)")
+            return []
+        }
+    }
+
+    private func saveHistory(_ history: [SavedUser]) {
+        do {
+            let data = try JSONEncoder().encode(history)
+            userDefaults.set(data, forKey: historyKey)
+        } catch {
+            print("Error saving history: \(error)")
+        }
+    }
+}
+

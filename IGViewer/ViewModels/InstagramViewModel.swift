@@ -9,14 +9,21 @@ class InstagramViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var isPrivate: Bool = false
     @Published var savedUsers: [SavedUser] = []
+    @Published var history: [SavedUser] = []
     @Published var isCurrentUserSaved: Bool = false
 
     init() {
         loadSavedUsers()
+        loadHistory()
     }
 
     func loadSavedUsers() {
         savedUsers = SavedUsersManager.shared.getSavedUsers()
+        loadHistory() // Reload history to filter out saved users
+    }
+
+    func loadHistory() {
+        history = HistoryManager.shared.getHistory(excludingSavedUsers: savedUsers)
     }
 
     func fetchUserProfile(username: String) async {
@@ -30,6 +37,10 @@ class InstagramViewModel: ObservableObject {
             posts = result.posts
             isPrivate = result.user.isPrivate
             updateSavedStatus()
+
+            // Add to history
+            HistoryManager.shared.addToHistory(result.user)
+            loadHistory()
         } catch let error as InstagramError {
             errorMessage = error.errorDescription
         } catch {
@@ -67,5 +78,6 @@ class InstagramViewModel: ObservableObject {
         isPrivate = false
         isCurrentUserSaved = false
         loadSavedUsers()
+        loadHistory()
     }
 }
