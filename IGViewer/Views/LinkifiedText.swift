@@ -4,14 +4,12 @@ import Foundation
 
 struct LinkifiedText: View {
     let text: String
-    @ObservedObject var viewModel: InstagramViewModel
     @Binding var selectedUsername: String?
     @Binding var isNavigating: Bool
 
     var body: some View {
         LinkifiedTextRepresentable(
             text: text,
-            viewModel: viewModel,
             selectedUsername: $selectedUsername,
             isNavigating: $isNavigating
         )
@@ -20,7 +18,6 @@ struct LinkifiedText: View {
 
 private struct LinkifiedTextRepresentable: UIViewRepresentable {
     let text: String
-    @ObservedObject var viewModel: InstagramViewModel
     @Binding var selectedUsername: String?
     @Binding var isNavigating: Bool
 
@@ -50,7 +47,7 @@ private struct LinkifiedTextRepresentable: UIViewRepresentable {
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(viewModel: viewModel, selectedUsername: $selectedUsername, isNavigating: $isNavigating)
+        Coordinator(selectedUsername: $selectedUsername, isNavigating: $isNavigating)
     }
 
     private func linkifyText(_ text: String) -> NSAttributedString {
@@ -83,12 +80,10 @@ private struct LinkifiedTextRepresentable: UIViewRepresentable {
     }
 
     class Coordinator: NSObject, UITextViewDelegate {
-        var viewModel: InstagramViewModel
         @Binding var selectedUsername: String?
         @Binding var isNavigating: Bool
 
-        init(viewModel: InstagramViewModel, selectedUsername: Binding<String?>, isNavigating: Binding<Bool>) {
-            self.viewModel = viewModel
+        init(selectedUsername: Binding<String?>, isNavigating: Binding<Bool>) {
             self._selectedUsername = selectedUsername
             self._isNavigating = isNavigating
         }
@@ -99,12 +94,7 @@ private struct LinkifiedTextRepresentable: UIViewRepresentable {
                 if url.scheme == "igviewer", url.host == "user" {
                     let username = url.lastPathComponent
                     selectedUsername = username
-
-                    Task { @MainActor in
-                        await viewModel.fetchUserProfile(username: username)
-                        isNavigating = true
-                    }
-
+                    isNavigating = true
                     return nil
                 }
             }
@@ -116,12 +106,7 @@ private struct LinkifiedTextRepresentable: UIViewRepresentable {
             if URL.scheme == "igviewer", URL.host == "user" {
                 let username = URL.lastPathComponent
                 selectedUsername = username
-
-                Task { @MainActor in
-                    await viewModel.fetchUserProfile(username: username)
-                    isNavigating = true
-                }
-
+                isNavigating = true
                 return false
             }
             return true

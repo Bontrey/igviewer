@@ -155,7 +155,7 @@ struct PhotoDetailView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Caption")
                             .font(.headline)
-                        LinkifiedText(text: caption, viewModel: viewModel, selectedUsername: $selectedUsername, isNavigating: $isNavigating)
+                        LinkifiedText(text: caption, selectedUsername: $selectedUsername, isNavigating: $isNavigating)
                     }
                     .padding(.horizontal, 16)
                 }
@@ -189,7 +189,7 @@ struct PhotoDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .background(
             NavigationLink(
-                destination: PhotosDestinationView(viewModel: viewModel, username: selectedUsername ?? ""),
+                destination: PhotosDestinationView(username: selectedUsername ?? ""),
                 isActive: $isNavigating
             ) {
                 EmptyView()

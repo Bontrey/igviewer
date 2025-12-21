@@ -44,7 +44,7 @@ struct ContentView: View {
                         .multilineTextAlignment(.center)
                 }
 
-                NavigationLink(destination: PhotosDestinationView(viewModel: viewModel, username: username), isActive: $navigateToPhotos) {
+                NavigationLink(destination: PhotosDestinationView(username: username), isActive: $navigateToPhotos) {
                     EmptyView()
                 }
             }
@@ -68,17 +68,33 @@ struct ContentView: View {
 }
 
 struct PhotosDestinationView: View {
-    @ObservedObject var viewModel: InstagramViewModel
     let username: String
+    @StateObject private var viewModel = InstagramViewModel()
 
     var body: some View {
         VStack {
-            if viewModel.isPrivate {
+            if viewModel.isLoading {
+                ProgressView("Loading...")
+                    .padding()
+            } else if let error = viewModel.errorMessage {
+                VStack(spacing: 16) {
+                    Image(systemName: "exclamationmark.triangle")
+                        .font(.system(size: 50))
+                        .foregroundColor(.red)
+                    Text(error)
+                        .foregroundColor(.red)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                }
+            } else if viewModel.isPrivate {
                 PrivateAccountView(username: viewModel.currentUser?.username ?? username)
             } else {
                 PhotoGridView(posts: viewModel.posts, username: viewModel.currentUser?.username ?? username, profilePicUrl: viewModel.currentUser?.profilePicUrl, viewModel: viewModel)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .task {
+            await viewModel.fetchUserProfile(username: username)
+        }
     }
 }
