@@ -1,7 +1,23 @@
 import SwiftUI
 
+@MainActor
+class ViewModelCache: ObservableObject {
+    private var cache: [String: InstagramViewModel] = [:]
+
+    func getViewModel(for username: String) -> InstagramViewModel {
+        let normalizedUsername = username.lowercased()
+        if let existing = cache[normalizedUsername] {
+            return existing
+        }
+        let newViewModel = InstagramViewModel()
+        cache[normalizedUsername] = newViewModel
+        return newViewModel
+    }
+}
+
 struct ContentView: View {
     @StateObject private var viewModel = InstagramViewModel()
+    @StateObject private var viewModelCache = ViewModelCache()
     @State private var username: String = ""
     @Binding var deepLinkUsername: String?
     @State private var navigateToPhotos = false
@@ -64,12 +80,25 @@ struct ContentView: View {
                 }
             }
         }
+        .environmentObject(viewModelCache)
     }
 }
 
 struct PhotosDestinationView: View {
     let username: String
-    @StateObject private var viewModel = InstagramViewModel()
+    @EnvironmentObject var cache: ViewModelCache
+
+    var body: some View {
+        PhotosDestinationContent(
+            username: username,
+            viewModel: cache.getViewModel(for: username)
+        )
+    }
+}
+
+private struct PhotosDestinationContent: View {
+    let username: String
+    @ObservedObject var viewModel: InstagramViewModel
 
     var body: some View {
         VStack {
@@ -94,7 +123,10 @@ struct PhotosDestinationView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .task {
-            await viewModel.fetchUserProfile(username: username)
+            // Only fetch if we don't have data yet (i.e., first visit)
+            if viewModel.currentUser == nil {
+                await viewModel.fetchUserProfile(username: username)
+            }
         }
     }
 }
