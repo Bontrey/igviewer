@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5E1D5878AF2345C8BD439F59 /* LinkifiedText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE5415733274B15B5045F77 /* LinkifiedText.swift */; };
 		96A3BF002EE092D9003BBC85 /* IGViewerShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 96A3BEF62EE092D9003BBC85 /* IGViewerShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AA0000000000000000000001 /* IGViewerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000001 /* IGViewerApp.swift */; };
 		AA0000000000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000002 /* ContentView.swift */; };
@@ -46,6 +47,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0DE5415733274B15B5045F77 /* LinkifiedText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkifiedText.swift; sourceTree = "<group>"; };
 		96A3BEF62EE092D9003BBC85 /* IGViewerShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = IGViewerShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		96A3BF0E2EE09447003BBC85 /* IGViewer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = IGViewer.entitlements; sourceTree = "<group>"; };
 		BB0000000000000000000001 /* IGViewerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IGViewerApp.swift; sourceTree = "<group>"; };
@@ -161,7 +163,8 @@
 				BB0000000000000000000008 /* PhotoGridView.swift */,
 				BB0000000000000000000009 /* PrivateAccountView.swift */,
 				BB0000000000000000000010 /* AsyncImageView.swift */,
-			);
+			
+				0DE5415733274B15B5045F77 /* LinkifiedText.swift */,);
 			path = Views;
 			sourceTree = "<group>";
 		};
@@ -276,6 +279,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+								5E1D5878AF2345C8BD439F59 /* LinkifiedText.swift in Sources */,
 				AA0000000000000000000001 /* IGViewerApp.swift in Sources */,
 				AA0000000000000000000002 /* ContentView.swift in Sources */,
 				AA0000000000000000000003 /* InstagramUser.swift in Sources */,

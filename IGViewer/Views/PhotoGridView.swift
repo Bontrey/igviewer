@@ -88,7 +88,7 @@ struct PhotoGridView: View {
                     } else {
                         LazyVGrid(columns: columns, spacing: 2) {
                             ForEach(posts) { post in
-                                NavigationLink(destination: PhotoDetailView(post: post)) {
+                                NavigationLink(destination: PhotoDetailView(post: post, viewModel: viewModel)) {
                                     AsyncImageView(url: post.imageUrl)
                                         .aspectRatio(1, contentMode: .fill)
                                         .frame(width: (geometry.size.width - 4) / 3, height: (geometry.size.width - 4) / 3)
@@ -115,7 +115,10 @@ struct PhotoGridView: View {
 
 struct PhotoDetailView: View {
     let post: InstagramPost
+    @ObservedObject var viewModel: InstagramViewModel
     @State private var currentPage = 0
+    @State private var selectedUsername: String?
+    @State private var isNavigating = false
 
     var body: some View {
         ScrollView {
@@ -125,9 +128,13 @@ struct PhotoDetailView: View {
                     VStack(spacing: 8) {
                         TabView(selection: $currentPage) {
                             ForEach(Array(post.imageUrls.enumerated()), id: \.offset) { index, imageUrl in
-                                AsyncImageView(url: imageUrl)
-                                    .aspectRatio(contentMode: .fit)
-                                    .tag(index)
+                                GeometryReader { geo in
+                                    AsyncImageView(url: imageUrl)
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: geo.size.width, height: geo.size.height)
+                                        .clipped()
+                                }
+                                .tag(index)
                             }
                         }
                         .tabViewStyle(.page(indexDisplayMode: .always))
@@ -148,10 +155,9 @@ struct PhotoDetailView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Caption")
                             .font(.headline)
-                        Text(caption)
-                            .font(.body)
+                        LinkifiedText(text: caption, viewModel: viewModel, selectedUsername: $selectedUsername, isNavigating: $isNavigating)
                     }
-                    .padding(.horizontal)
+                    .padding(.horizontal, 16)
                 }
 
                 HStack(spacing: 24) {
@@ -165,19 +171,30 @@ struct PhotoDetailView: View {
                             .foregroundColor(.blue)
                     }
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, 16)
 
                 if let timestamp = post.timestamp {
                     Text(timestamp, style: .date)
                         .font(.caption)
                         .foregroundColor(.secondary)
-                        .padding(.horizontal)
+                        .padding(.horizontal, 16)
                 }
 
-                Spacer()
+                // Bottom padding to ensure content isn't cut off
+                Spacer(minLength: 20)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
+        .background(
+            NavigationLink(
+                destination: PhotosDestinationView(viewModel: viewModel, username: selectedUsername ?? ""),
+                isActive: $isNavigating
+            ) {
+                EmptyView()
+            }
+            .hidden()
+        )
     }
 }
