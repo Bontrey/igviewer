@@ -47,6 +47,10 @@ struct ContentView: View {
                         }
                     }
                 )
+                .onAppear {
+                    // Refresh lists when returning from photo view
+                    viewModel.loadSavedUsers()
+                }
 
                 if viewModel.isLoading {
                     ProgressView("Loading...")

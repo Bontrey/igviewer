@@ -294,7 +294,7 @@ class HistoryManager {
     static let shared = HistoryManager()
     private let userDefaults = UserDefaults.standard
     private let historyKey = "viewedUsersHistory"
-    private let maxHistoryCount = 7
+    private let maxHistoryCount = 8
 
     private init() {}
 
