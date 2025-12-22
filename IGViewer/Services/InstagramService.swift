@@ -295,6 +295,7 @@ class HistoryManager {
     private let userDefaults = UserDefaults.standard
     private let historyKey = "viewedUsersHistory"
     private let maxHistoryCount = 8
+    private let maxStoredHistoryCount = 20 // Store more to account for saved users
 
     private init() {}
 
@@ -307,10 +308,12 @@ class HistoryManager {
             let history = try JSONDecoder().decode([SavedUser].self, from: data)
             let savedUserIds = Set(savedUsers.map { $0.id })
 
-            // Filter out saved users and return sorted by date
+            // Filter out saved users, sort by date, and limit to maxHistoryCount
             return history
                 .filter { !savedUserIds.contains($0.id) }
                 .sorted { $0.savedDate > $1.savedDate }
+                .prefix(maxHistoryCount)
+                .map { $0 }
         } catch {
             print("Error decoding history: \(error)")
             return []
@@ -327,9 +330,9 @@ class HistoryManager {
         let historyUser = SavedUser(from: user)
         history.insert(historyUser, at: 0)
 
-        // Keep only the most recent 7
-        if history.count > maxHistoryCount {
-            history = Array(history.prefix(maxHistoryCount))
+        // Keep a larger buffer in storage to account for saved users being filtered
+        if history.count > maxStoredHistoryCount {
+            history = Array(history.prefix(maxStoredHistoryCount))
         }
 
         saveHistory(history)
