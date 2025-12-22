@@ -52,19 +52,25 @@ private struct LinkifiedTextRepresentable: UIViewRepresentable {
         let textView = SelfSizingTextView()
         textView.isEditable = false
         textView.isScrollEnabled = false
+        textView.isSelectable = false // Disable to prevent highlight overlay
         textView.backgroundColor = .clear
         textView.textContainerInset = .zero
         textView.textContainer.lineFragmentPadding = 0
         textView.textContainer.lineBreakMode = .byWordWrapping
-        textView.delegate = context.coordinator
         textView.font = .systemFont(ofSize: 18)
         textView.textColor = .label
         textView.linkTextAttributes = [
             .foregroundColor: UIColor.systemBlue,
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
+        textView.dataDetectorTypes = [] // Disable data detectors to prevent interference
         textView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         textView.setContentHuggingPriority(.defaultHigh, for: .vertical)
+
+        // Add custom tap gesture recognizer to handle link taps
+        let tapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap(_:)))
+        textView.addGestureRecognizer(tapGesture)
+
         return textView
     }
 
@@ -145,7 +151,7 @@ private struct LinkifiedTextRepresentable: UIViewRepresentable {
         return attributedString
     }
 
-    class Coordinator: NSObject, UITextViewDelegate {
+    class Coordinator: NSObject {
         @Binding var selectedUsername: String?
         @Binding var isNavigating: Bool
         @Binding var urlToOpen: URL?
@@ -156,15 +162,33 @@ private struct LinkifiedTextRepresentable: UIViewRepresentable {
             self._urlToOpen = urlToOpen
         }
 
-        @available(iOS 17.0, *)
-        func textView(_ textView: UITextView, primaryActionFor textItem: UITextItem, defaultAction: UIAction) -> UIAction? {
-            if case .link(let url) = textItem.content {
+        @objc func handleTap(_ gesture: UITapGestureRecognizer) {
+            guard let textView = gesture.view as? UITextView,
+                  let attributedText = textView.attributedText else {
+                return
+            }
+
+            let location = gesture.location(in: textView)
+            let textContainer = textView.textContainer
+            let layoutManager = textView.layoutManager
+
+            // Convert tap location to text index
+            let characterIndex = layoutManager.characterIndex(
+                for: location,
+                in: textContainer,
+                fractionOfDistanceBetweenInsertionPoints: nil
+            )
+
+            // Check if tapped on a link
+            if characterIndex < attributedText.length,
+               let url = attributedText.attribute(.link, at: characterIndex, effectiveRange: nil) as? URL {
+
                 // Handle @mentions with custom scheme
                 if url.scheme == "igviewer", url.host == "user" {
                     let username = url.lastPathComponent
                     selectedUsername = username
                     isNavigating = true
-                    return nil
+                    return
                 }
 
                 // Handle regular URLs - open in SafariView
@@ -172,31 +196,9 @@ private struct LinkifiedTextRepresentable: UIViewRepresentable {
                     DispatchQueue.main.async {
                         self.urlToOpen = url
                     }
-                    return nil
+                    return
                 }
             }
-            return defaultAction
-        }
-
-        // Fallback for iOS 15-16
-        func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-            // Handle @mentions with custom scheme
-            if URL.scheme == "igviewer", URL.host == "user" {
-                let username = URL.lastPathComponent
-                selectedUsername = username
-                isNavigating = true
-                return false
-            }
-
-            // Handle regular URLs - open in SafariView
-            if URL.scheme == "http" || URL.scheme == "https" {
-                DispatchQueue.main.async {
-                    self.urlToOpen = URL
-                }
-                return false
-            }
-
-            return true
         }
     }
 }
