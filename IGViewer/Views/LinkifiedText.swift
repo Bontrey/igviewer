@@ -1,18 +1,44 @@
 import SwiftUI
 import UIKit
 import Foundation
+import SafariServices
+
+// Make URL identifiable for .sheet(item:)
+extension URL: @retroactive Identifiable {
+    public var id: String {
+        return absoluteString
+    }
+}
 
 struct LinkifiedText: View {
     let text: String
     @Binding var selectedUsername: String?
     @Binding var isNavigating: Bool
+    @State private var urlToOpen: URL?
 
     var body: some View {
         LinkifiedTextRepresentable(
             text: text,
             selectedUsername: $selectedUsername,
-            isNavigating: $isNavigating
+            isNavigating: $isNavigating,
+            urlToOpen: $urlToOpen
         )
+        .sheet(item: $urlToOpen) { url in
+            SafariView(url: url)
+        }
+    }
+}
+
+// SafariView wrapper for SwiftUI
+struct SafariView: UIViewControllerRepresentable {
+    let url: URL
+
+    func makeUIViewController(context: Context) -> SFSafariViewController {
+        return SFSafariViewController(url: url)
+    }
+
+    func updateUIViewController(_ uiViewController: SFSafariViewController, context: Context) {
+        // No updates needed
     }
 }
 
@@ -20,6 +46,7 @@ private struct LinkifiedTextRepresentable: UIViewRepresentable {
     let text: String
     @Binding var selectedUsername: String?
     @Binding var isNavigating: Bool
+    @Binding var urlToOpen: URL?
 
     func makeUIView(context: Context) -> SelfSizingTextView {
         let textView = SelfSizingTextView()
@@ -47,7 +74,11 @@ private struct LinkifiedTextRepresentable: UIViewRepresentable {
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(selectedUsername: $selectedUsername, isNavigating: $isNavigating)
+        Coordinator(
+            selectedUsername: $selectedUsername,
+            isNavigating: $isNavigating,
+            urlToOpen: $urlToOpen
+        )
     }
 
     private func linkifyText(_ text: String) -> NSAttributedString {
@@ -58,23 +89,56 @@ private struct LinkifiedTextRepresentable: UIViewRepresentable {
         attributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 18), range: fullRange)
         attributedString.addAttribute(.foregroundColor, value: UIColor.label, range: fullRange)
 
-        // Negative lookbehind to avoid matching email addresses (e.g., user@example.com)
-        let pattern = "(?<![A-Za-z0-9.])@([A-Za-z0-9._]+)"
+        let nsString = text as NSString
 
-        guard let regex = try? NSRegularExpression(pattern: pattern, options: []) else {
-            return attributedString
+        // 1. Linkify @mentions
+        // Negative lookbehind to avoid matching email addresses (e.g., user@example.com)
+        let mentionPattern = "(?<![A-Za-z0-9.])@([A-Za-z0-9._]+)"
+
+        if let mentionRegex = try? NSRegularExpression(pattern: mentionPattern, options: []) {
+            let matches = mentionRegex.matches(in: text, options: [], range: NSRange(location: 0, length: nsString.length))
+
+            for match in matches {
+                let usernameRange = match.range(at: 1)
+                let username = nsString.substring(with: usernameRange)
+
+                // Create a custom URL scheme for username links
+                if let url = URL(string: "igviewer://user/\(username)") {
+                    attributedString.addAttribute(.link, value: url, range: match.range)
+                }
+            }
         }
 
-        let nsString = text as NSString
-        let matches = regex.matches(in: text, options: [], range: NSRange(location: 0, length: nsString.length))
+        // 2. Linkify URLs (with or without scheme)
+        // Pattern matches:
+        // - URLs with http:// or https://
+        // - URLs starting with www.
+        // - Domain-like patterns (e.g., example.com, sub.example.com/path)
+        let urlPattern = "(?i)\\b(?:(?:https?://)|(?:www\\.))(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z]{2,}(?:[/?#][^\\s]*)?|\\b(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z]{2,}(?:/[^\\s]*)?"
 
-        for match in matches {
-            let usernameRange = match.range(at: 1)
-            let username = nsString.substring(with: usernameRange)
+        if let urlRegex = try? NSRegularExpression(pattern: urlPattern, options: []) {
+            let matches = urlRegex.matches(in: text, options: [], range: NSRange(location: 0, length: nsString.length))
 
-            // Create a custom URL scheme for username links
-            if let url = URL(string: "igviewer://user/\(username)") {
-                attributedString.addAttribute(.link, value: url, range: match.range)
+            for match in matches {
+                let urlString = nsString.substring(with: match.range)
+
+                // Skip if this is part of an email address
+                if match.range.location > 0 {
+                    let previousChar = nsString.substring(with: NSRange(location: match.range.location - 1, length: 1))
+                    if previousChar == "@" {
+                        continue
+                    }
+                }
+
+                // Add scheme if missing
+                var fullURLString = urlString
+                if !urlString.lowercased().hasPrefix("http://") && !urlString.lowercased().hasPrefix("https://") {
+                    fullURLString = "https://\(urlString)"
+                }
+
+                if let url = URL(string: fullURLString) {
+                    attributedString.addAttribute(.link, value: url, range: match.range)
+                }
             }
         }
 
@@ -84,19 +148,30 @@ private struct LinkifiedTextRepresentable: UIViewRepresentable {
     class Coordinator: NSObject, UITextViewDelegate {
         @Binding var selectedUsername: String?
         @Binding var isNavigating: Bool
+        @Binding var urlToOpen: URL?
 
-        init(selectedUsername: Binding<String?>, isNavigating: Binding<Bool>) {
+        init(selectedUsername: Binding<String?>, isNavigating: Binding<Bool>, urlToOpen: Binding<URL?>) {
             self._selectedUsername = selectedUsername
             self._isNavigating = isNavigating
+            self._urlToOpen = urlToOpen
         }
 
         @available(iOS 17.0, *)
         func textView(_ textView: UITextView, primaryActionFor textItem: UITextItem, defaultAction: UIAction) -> UIAction? {
             if case .link(let url) = textItem.content {
+                // Handle @mentions with custom scheme
                 if url.scheme == "igviewer", url.host == "user" {
                     let username = url.lastPathComponent
                     selectedUsername = username
                     isNavigating = true
+                    return nil
+                }
+
+                // Handle regular URLs - open in SafariView
+                if url.scheme == "http" || url.scheme == "https" {
+                    DispatchQueue.main.async {
+                        self.urlToOpen = url
+                    }
                     return nil
                 }
             }
@@ -105,12 +180,22 @@ private struct LinkifiedTextRepresentable: UIViewRepresentable {
 
         // Fallback for iOS 15-16
         func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+            // Handle @mentions with custom scheme
             if URL.scheme == "igviewer", URL.host == "user" {
                 let username = URL.lastPathComponent
                 selectedUsername = username
                 isNavigating = true
                 return false
             }
+
+            // Handle regular URLs - open in SafariView
+            if URL.scheme == "http" || URL.scheme == "https" {
+                DispatchQueue.main.async {
+                    self.urlToOpen = URL
+                }
+                return false
+            }
+
             return true
         }
     }
