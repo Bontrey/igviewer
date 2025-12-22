@@ -58,7 +58,8 @@ private struct LinkifiedTextRepresentable: UIViewRepresentable {
         attributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 18), range: fullRange)
         attributedString.addAttribute(.foregroundColor, value: UIColor.label, range: fullRange)
 
-        let pattern = "@([A-Za-z0-9._]+)"
+        // Negative lookbehind to avoid matching email addresses (e.g., user@example.com)
+        let pattern = "(?<![A-Za-z0-9.])@([A-Za-z0-9._]+)"
 
         guard let regex = try? NSRegularExpression(pattern: pattern, options: []) else {
             return attributedString
