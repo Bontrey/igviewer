@@ -163,8 +163,8 @@
 				BB0000000000000000000008 /* PhotoGridView.swift */,
 				BB0000000000000000000009 /* PrivateAccountView.swift */,
 				BB0000000000000000000010 /* AsyncImageView.swift */,
-			
-				0DE5415733274B15B5045F77 /* LinkifiedText.swift */,);
+				0DE5415733274B15B5045F77 /* LinkifiedText.swift */,
+			);
 			path = Views;
 			sourceTree = "<group>";
 		};
@@ -279,7 +279,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-								5E1D5878AF2345C8BD439F59 /* LinkifiedText.swift in Sources */,
+				5E1D5878AF2345C8BD439F59 /* LinkifiedText.swift in Sources */,
 				AA0000000000000000000001 /* IGViewerApp.swift in Sources */,
 				AA0000000000000000000002 /* ContentView.swift in Sources */,
 				AA0000000000000000000003 /* InstagramUser.swift in Sources */,
